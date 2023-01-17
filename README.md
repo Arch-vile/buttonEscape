@@ -16,6 +16,9 @@ The amount of turns per level is limited and the levels become increasingly diff
 ## Starting a new game
 Go to the game's web site on the shared display to get a code. Each player goes to the web site and inserts the code to get to the same game.
 
+## Game features
+- Gates that are opened by standing on the similarly colored pad (to increase collaboration).
+
 ## UI bare bones
 Mobile phone UI will have two buttons:
 - One to turn characters facing clockwise 90 degrees

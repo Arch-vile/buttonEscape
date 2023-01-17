@@ -32,3 +32,12 @@ For simplicity there will only be one maze. The increasing difficulty in levels 
 
 ## Architecture
 Server keeping the game state and "streaming" to the shared display.
+
+Clients communicate with the server through WebSocket API for two way communication.
+
+Shared screen receives game state from server with Server Side Events for rendering.
+
+![image](https://user-images.githubusercontent.com/2006859/212986366-c09c04be-06d6-4eab-990c-1f06c12c7838.png)
+
+
+

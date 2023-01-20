@@ -23,12 +23,10 @@
 
     drawMaze(maze);
     var playerData = [
-        {x: 1, y: 1, direction: "UP"},
-        {x: 7, y: 3, direction: "DOWN"},
-        {x: 4, y: 5, direction: "LEFT"},
-        {x: 2, y: 8, direction: "RIGHT"},
-    ]
+        [{direction: "UP", x: 3, y: 5}, {direction: "UP", x: 3, y: 6}],
+        [{direction: "LEFT", x: 1, y: 1},{direction: "LEFT", x: 2, y: 1}]
+    ];
 
-    drawPlayer(playerData);
+    animatePlayer(playerData);
 </script>
 </body>

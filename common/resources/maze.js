@@ -45,6 +45,7 @@ function drawMaze(maze) {
 
 
 function drawPlayer(playerData) {
+    console.log('drawing player',playerData);
     // Get the canvas element and its context
     var canvas = document.getElementById("mazeCanvas");
     var ctx = canvas.getContext("2d");
@@ -83,5 +84,43 @@ function drawPlayer(playerData) {
             ctx.arc(x+7, y+5, 1, 0, 2 * Math.PI);
             ctx.fill();
         }
+    }
+}
+function animateOnePlayer(player) {
+    var canvas = document.getElementById("mazeCanvas");
+    var ctx = canvas.getContext("2d");
+    var direction = player.direction;
+    var x = player.x * 10;
+    var y = player.y * 10;
+    var i = 1;
+    var interval = setInterval(function(){
+        debugger
+        var pos = player[i];
+        var newX = pos.x * 10;
+        var newY = pos.y * 10;
+
+        if (newX > x) {
+            x += 1;
+        } else if (newX < x) {
+            x -= 1;
+        } else if (newY > y) {
+            y += 1;
+        } else if (newY < y) {
+            y -= 1;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawMaze(maze);
+        drawPlayer({x:x/10,y:y/10, direction: direction});
+        if(x === newX && y === newY) {
+            clearInterval(interval);
+            i++;
+            if(i< player.length) animateOnePlayer({x:x/10,y:y/10, direction: direction,positions:player.slice(i)});
+        }
+    }, 10);
+}
+
+function animatePlayer(playerData) {
+    for (var i = 0; i < playerData.length; i++) {
+        animateOnePlayer(playerData[i]);
     }
 }

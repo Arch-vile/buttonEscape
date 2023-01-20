@@ -42,3 +42,46 @@ function drawMaze(maze) {
         ctx.stroke();
     }
 }
+
+
+function drawPlayer(playerData) {
+    // Get the canvas element and its context
+    var canvas = document.getElementById("mazeCanvas");
+    var ctx = canvas.getContext("2d");
+
+    // Iterate through the player data array
+    for (var i = 0; i < playerData.length; i++) {
+        var player = playerData[i];
+        var x = player.x * 10; // x-coordinate of the player
+        var y = player.y * 10; // y-coordinate of the player
+        var direction = player.direction; // direction the player is facing
+
+        // Draw the player based on the direction they are facing
+        ctx.fillStyle = "blue";
+        ctx.beginPath();
+        ctx.arc(x+5, y+5, 5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "white";
+        if (direction === "UP") {
+            ctx.beginPath();
+            ctx.arc(x+5, y+3, 1, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        else if (direction === "DOWN") {
+            ctx.beginPath();
+            ctx.arc(x+5, y+7, 1, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        else if (direction === "LEFT") {
+            ctx.beginPath();
+            ctx.arc(x+3, y+5, 1, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        else if (direction === "RIGHT") {
+            ctx.beginPath();
+            ctx.arc(x+7, y+5, 1, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+    }
+}

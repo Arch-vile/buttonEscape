@@ -87,6 +87,12 @@ function drawPlayer(playerData) {
     }
 }
 
+interface Player {
+    direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
+    x: number;
+    y: number;
+}
+
 function animateOnePlayer(playerHistory: Player[]) {
     const canvas = document.getElementById("mazeCanvas") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d");

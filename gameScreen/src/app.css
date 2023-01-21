@@ -1,11 +1,11 @@
-#layer1 {
+#players {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 3;
 }
 
-#layer2 {
+#maze {
     position: absolute;
     top: 0;
     left: 0;

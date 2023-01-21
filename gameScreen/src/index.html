@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Maze Canvas</title>
-    <script src="build/app.js"></script>
 </head>
 <body>
 
@@ -12,28 +11,5 @@
     <canvas id="layer3" width="300" height="300"></canvas>
 </div>
 
-<script>
-    // Define the maze as a 2D array
-    var maze = [
-        ["#", "#", "#", "#", "#", "#", "#", "#", "#"],
-        ["#", ".", ".", ".", "#", ".", ".", ".", "#"],
-        ["#", ".", "#", ".", "#", ".", "#", ".", "#"],
-        ["#", ".", ".", ".", ".", ".", "#", ".", "#"],
-        ["#", "#", "#", "#", ".", "#", "#", ".", "#"],
-        ["#", ".", ".", ".", ".", ".", ".", ".", "#"],
-        ["#", ".", "#", "#", "#", ".", "#", "#", "#"],
-        ["#", ".", ".", ".", "#", ".", ".", ".", "#"],
-        ["#", "#", "#", "#", "#", "#", "#", "#", "#"]
-    ];
-
-    const canvases = createCanvases();
-
-    drawMaze(maze, canvases.maze);
-    var playerData = [
-        [{direction: "UP", x: 3, y: 5}, {direction: "UP", x: 3, y: 6}],
-        [{direction: "LEFT", x: 1, y: 1},{direction: "LEFT", x: 2, y: 1}]
-    ];
-
-    animatePlayers(playerData, canvases.players);
-</script>
+<script src="./app.ts"></script>
 </body>

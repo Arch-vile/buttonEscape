@@ -10,6 +10,19 @@ interface GFX {
     ctx: CanvasRenderingContext2D;
 }
 
+export function createCanvases() {
+    return {
+        maze: createCanvas('maze'),
+        players: createCanvas('players'),
+    }
+}
+
+function createCanvas(name: string): GFX {
+    const canvas = document.getElementById(name) as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d")!;
+    return {canvas, ctx}
+}
+
 function drawGridlines(maze: string[][], gfx: GFX) {
     const {ctx,canvas} = gfx;
 
@@ -27,7 +40,7 @@ function drawGridlines(maze: string[][], gfx: GFX) {
     }
 }
 
-function drawMaze(maze: string[][], gfx: GFX) {
+export function drawMaze(maze: string[][], gfx: GFX) {
     const {ctx,canvas} = gfx;
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -79,6 +92,7 @@ function drawPlayer(player: Player, gfx: GFX) {
         }
 }
 
+
 function animateOnePlayer(playerHistory: Player[], gfx: GFX) {
     const {ctx, canvas} = gfx;
     let { direction, x, y } = playerHistory[0];
@@ -109,8 +123,47 @@ function animateOnePlayer(playerHistory: Player[], gfx: GFX) {
 }
 
 
-function animatePlayer(playerHistory: Player[][], gfx: GFX) {
+export function animatePlayers(playerHistory: Player[][], gfx: GFX) {
     for (var i = 0; i < playerHistory.length; i++) {
         animateOnePlayer(playerHistory[i],gfx);
     }
 }
+
+export function foo() {
+    console.log("IN FOO");
+}
+
+
+function run() {
+
+foo();
+// Define the maze as a 2D array
+var maze = [
+    ["#", "#", "#", "#", "#", "#", "#", "#", "#"],
+    ["#", ".", ".", ".", "#", ".", ".", ".", "#"],
+    ["#", ".", "#", ".", "#", ".", "#", ".", "#"],
+    ["#", ".", ".", ".", ".", ".", "#", ".", "#"],
+    ["#", "#", "#", "#", ".", "#", "#", ".", "#"],
+    ["#", ".", ".", ".", ".", ".", ".", ".", "#"],
+    ["#", ".", "#", "#", "#", ".", "#", "#", "#"],
+    ["#", ".", ".", ".", "#", ".", ".", ".", "#"],
+    ["#", "#", "#", "#", "#", "#", "#", "#", "#"]
+];
+
+setTimeout(() => createCanvases(), 5000);
+
+const canvases = createCanvases();
+
+drawMaze(maze, canvases.maze);
+var playerData: Player[][] = [
+    [{direction: "UP", x: 3, y: 5}, {direction: "UP", x: 3, y: 6}],
+    [{direction: "LEFT", x: 1, y: 1},{direction: "LEFT", x: 2, y: 1}]
+];
+
+animatePlayers(playerData, canvases.players);
+
+
+console.log("LOADDDDDED");
+}
+
+run();

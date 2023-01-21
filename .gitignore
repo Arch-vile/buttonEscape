@@ -25,3 +25,5 @@ hs_err_pid*
 .envrc
 gameScreen/node_modules
 gameScreen/build
+gameScreen/.cache
+gameScreen/dist

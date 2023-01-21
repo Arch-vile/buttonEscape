@@ -7,8 +7,8 @@
 <body>
 
 <div id="mazeContainer">
-    <canvas id="layer1" width="300" height="300"></canvas>
-    <canvas id="layer2" width="300" height="300"></canvas>
+    <canvas id="maze" width="300" height="300"></canvas>
+    <canvas id="players" width="300" height="300"></canvas>
     <canvas id="layer3" width="300" height="300"></canvas>
 </div>
 
@@ -26,12 +26,14 @@
         ["#", "#", "#", "#", "#", "#", "#", "#", "#"]
     ];
 
-    drawMaze(maze);
+    const canvases = createCanvases();
+
+    drawMaze(maze, canvases.maze);
     var playerData = [
         [{direction: "UP", x: 3, y: 5}, {direction: "UP", x: 3, y: 6}],
         [{direction: "LEFT", x: 1, y: 1},{direction: "LEFT", x: 2, y: 1}]
     ];
 
-    animatePlayer(playerData);
+    animatePlayers(playerData, canvases.players);
 </script>
 </body>

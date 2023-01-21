@@ -1,3 +1,10 @@
+
+interface Player {
+    direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
+    x: number;
+    y: number;
+}
+
 function drawGridlines(canvas:HTMLCanvasElement,maze: string[][]) {
     const ctx = canvas.getContext("2d");
     ctx.strokeStyle = "gray";
@@ -74,12 +81,6 @@ function drawPlayer(playerData) {
             ctx.fill();
         }
     }
-}
-
-interface Player {
-    direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
-    x: number;
-    y: number;
 }
 
 function animateOnePlayer(playerHistory: Player[]) {

@@ -43,12 +43,9 @@ function drawMaze(maze: string[][], gfx: GFX) {
 }
 
 
-function drawPlayer(playerData: Player[], gfx: GFX) {
-    const {ctx,canvas} = gfx;
+function drawPlayer(player: Player, gfx: GFX) {
+    const {ctx} = gfx;
 
-    // Iterate through the player data array
-    for (var i = 0; i < playerData.length; i++) {
-        var player = playerData[i];
         var x = player.x * 10; // x-coordinate of the player
         var y = player.y * 10; // y-coordinate of the player
         var direction = player.direction; // direction the player is facing
@@ -80,7 +77,6 @@ function drawPlayer(playerData: Player[], gfx: GFX) {
             ctx.arc(x+7, y+5, 1, 0, 2 * Math.PI);
             ctx.fill();
         }
-    }
 }
 
 function animateOnePlayer(playerHistory: Player[], gfx: GFX) {
@@ -103,7 +99,6 @@ function animateOnePlayer(playerHistory: Player[], gfx: GFX) {
             y -= 1;
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawMaze(maze,gfx);
         drawPlayer({x:x/10,y:y/10, direction: direction},gfx);
         if(x === newX && y === newY) {
             clearInterval(interval);
@@ -114,8 +109,8 @@ function animateOnePlayer(playerHistory: Player[], gfx: GFX) {
 }
 
 
-function animatePlayer(playerData) {
-    for (var i = 0; i < playerData.length; i++) {
-        animateOnePlayer(playerData[i]);
+function animatePlayer(playerHistory: Player[][], gfx: GFX) {
+    for (var i = 0; i < playerHistory.length; i++) {
+        animateOnePlayer(playerHistory[i],gfx);
     }
 }

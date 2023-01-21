@@ -5,10 +5,14 @@ interface Player {
     y: number;
 }
 
-function drawGridlines(canvas:HTMLCanvasElement,maze: string[][]) {
-    const ctx = canvas.getContext("2d");
-    ctx.strokeStyle = "gray";
-    ctx.lineWidth = 0.5;
+interface GFX {
+    canvas:HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+}
+
+function drawGridlines(maze: string[][], gfx: GFX) {
+    const {ctx,canvas} = gfx;
+
     for (let i = 0; i <= maze.length; i++) {
         ctx.beginPath();
         ctx.moveTo(i * 10, 0);
@@ -23,9 +27,8 @@ function drawGridlines(canvas:HTMLCanvasElement,maze: string[][]) {
     }
 }
 
-function drawMaze(maze: string[][]) {
-    const canvas = document.getElementById("mazeCanvas") as HTMLCanvasElement;
-    const ctx = canvas.getContext("2d");
+function drawMaze(maze: string[][], gfx: GFX) {
+    const {ctx,canvas} = gfx;
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "black";
@@ -36,15 +39,12 @@ function drawMaze(maze: string[][]) {
             }
         }
     }
-    drawGridlines(canvas,maze);
+    drawGridlines(maze,gfx);
 }
 
 
-function drawPlayer(playerData) {
-    console.log('drawing player',playerData);
-    // Get the canvas element and its context
-    var canvas = document.getElementById("mazeCanvas");
-    var ctx = canvas.getContext("2d");
+function drawPlayer(playerData: Player[], gfx: GFX) {
+    const {ctx,canvas} = gfx;
 
     // Iterate through the player data array
     for (var i = 0; i < playerData.length; i++) {
@@ -83,9 +83,8 @@ function drawPlayer(playerData) {
     }
 }
 
-function animateOnePlayer(playerHistory: Player[]) {
-    const canvas = document.getElementById("mazeCanvas") as HTMLCanvasElement;
-    const ctx = canvas.getContext("2d");
+function animateOnePlayer(playerHistory: Player[], gfx: GFX) {
+    const {ctx, canvas} = gfx;
     let { direction, x, y } = playerHistory[0];
     x *= 10;
     y *= 10;
@@ -104,12 +103,12 @@ function animateOnePlayer(playerHistory: Player[]) {
             y -= 1;
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawMaze(maze);
-        drawPlayer({x:x/10,y:y/10, direction: direction});
+        drawMaze(maze,gfx);
+        drawPlayer({x:x/10,y:y/10, direction: direction},gfx);
         if(x === newX && y === newY) {
             clearInterval(interval);
             i++;
-            if(i< playerHistory.length) animateOnePlayer(playerHistory.slice(i));
+            if(i< playerHistory.length) animateOnePlayer(playerHistory.slice(i),gfx);
         }
     }, 10);
 }

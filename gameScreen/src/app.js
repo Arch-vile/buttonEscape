@@ -78,18 +78,17 @@ function drawPlayer(playerData) {
         }
     }
 }
-function animateOnePlayer(player) {
-    var canvas = document.getElementById("mazeCanvas");
-    var ctx = canvas.getContext("2d");
-    var direction = player.direction;
-    var x = player.x * 10;
-    var y = player.y * 10;
-    var i = 1;
-    var interval = setInterval(function () {
-        debugger;
-        var pos = player[i];
-        var newX = pos.x * 10;
-        var newY = pos.y * 10;
+function animateOnePlayer(playerHistory) {
+    const canvas = document.getElementById("mazeCanvas");
+    const ctx = canvas.getContext("2d");
+    let { direction, x, y } = playerHistory[0];
+    x *= 10;
+    y *= 10;
+    let i = 1;
+    let interval = setInterval(() => {
+        const pos = playerHistory[i];
+        const newX = pos.x * 10;
+        const newY = pos.y * 10;
         if (newX > x) {
             x += 1;
         }
@@ -108,8 +107,8 @@ function animateOnePlayer(player) {
         if (x === newX && y === newY) {
             clearInterval(interval);
             i++;
-            if (i < player.length)
-                animateOnePlayer({ x: x / 10, y: y / 10, direction: direction, positions: player.slice(i) });
+            if (i < playerHistory.length)
+                animateOnePlayer(playerHistory.slice(i));
         }
     }, 10);
 }

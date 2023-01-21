@@ -10,7 +10,7 @@ interface GFX {
     ctx: CanvasRenderingContext2D;
 }
 
-export function createCanvases() {
+function createCanvases() {
     return {
         maze: createCanvas('maze'),
         players: createCanvas('players'),
@@ -40,7 +40,7 @@ function drawGridlines(maze: string[][], gfx: GFX) {
     }
 }
 
-export function drawMaze(maze: string[][], gfx: GFX) {
+function drawMaze(maze: string[][], gfx: GFX) {
     const {ctx,canvas} = gfx;
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -123,20 +123,13 @@ function animateOnePlayer(playerHistory: Player[], gfx: GFX) {
 }
 
 
-export function animatePlayers(playerHistory: Player[][], gfx: GFX) {
+function animatePlayers(playerHistory: Player[][], gfx: GFX) {
     for (var i = 0; i < playerHistory.length; i++) {
         animateOnePlayer(playerHistory[i],gfx);
     }
 }
 
-export function foo() {
-    console.log("IN FOO");
-}
-
-
 function run() {
-
-foo();
 // Define the maze as a 2D array
 var maze = [
     ["#", "#", "#", "#", "#", "#", "#", "#", "#"],
@@ -150,8 +143,6 @@ var maze = [
     ["#", "#", "#", "#", "#", "#", "#", "#", "#"]
 ];
 
-setTimeout(() => createCanvases(), 5000);
-
 const canvases = createCanvases();
 
 drawMaze(maze, canvases.maze);
@@ -161,9 +152,6 @@ var playerData: Player[][] = [
 ];
 
 animatePlayers(playerData, canvases.players);
-
-
-console.log("LOADDDDDED");
 }
 
 run();

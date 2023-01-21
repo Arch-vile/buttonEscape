@@ -1,0 +1,20 @@
+#layer1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+}
+
+#layer2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+#layer3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}

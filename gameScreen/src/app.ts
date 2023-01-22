@@ -123,41 +123,53 @@ function drawPlayer(x: number, y: number, gfx: GFX) {
 
 const FPS = 30;
 const CELL_SIZE = 10;
-const ANIMATION_DURATION = 1;
+
 function animatePlayers(playerHistory: PlayerStatus[][], gfx: GFX) {
-    let frame = 0;
-    let playersFrame = playerHistory.map(p => 0);
+    // Use map to create an array of animation promises for each player
+    const animationPromises = playerHistory.map((playerPositions, playerIndex) => {
+        return animatePlayer(playerPositions, gfx, playerIndex);
+    });
 
-    const intervalId = setInterval(() => {
-        // clear canvas
-        gfx.ctx.clearRect(0, 0, gfx.canvas.width, gfx.canvas.height);
-        // draw players
-        for (let i=0; i < playerHistory.length; i++) {
-            const player = playerHistory[i];
-            const currentPosition = player[playersFrame[i]];
-            const nextPosition = player[playersFrame[i] + 1];
-            if (!nextPosition) {
-                clearInterval(intervalId);
-                break;
-            }
-
-            // calculate the distance between current and next position
-            const distance = Math.sqrt(Math.pow(nextPosition.x - currentPosition.x, 2) + Math.pow(nextPosition.y - currentPosition.y, 2));
-            // calculate the number of frames needed for the animation
-            const frames = Math.ceil(ANIMATION_DURATION * FPS / (distance * CELL_SIZE));
-            // calculate the player's current position in pixels
-            const x = currentPosition.x * CELL_SIZE + (nextPosition.x - currentPosition.x) * CELL_SIZE * frame / frames;
-            const y = currentPosition.y * CELL_SIZE + (nextPosition.y - currentPosition.y) * CELL_SIZE * frame / frames;
-            drawPlayer(x, y, gfx);
-            if (frame === frames) {
-                playersFrame[i]++;
-                frame = 0;
-            }
-        }
-        frame++;
-    }, 1000/FPS);
+    // Use Promise.all to wait for all animations to finish
+    return Promise.all(animationPromises);
 }
 
+const ANIMATION_DURATION = 500; // in milliseconds
+
+function animatePlayer(playerPositions: PlayerStatus[], gfx: GFX, playerIndex: number) {
+    let currentPosition = playerPositions[0];
+    let nextPosition = playerPositions[1];
+    let startTime: number|undefined;
+
+    return new Promise((resolve) => {
+        let intervalId = setInterval(() => {
+            console.log(playerIndex)
+            if (!startTime) {
+                startTime = Date.now();
+            }
+            // Clear the canvas
+            gfx.ctx.clearRect(0, 0, gfx.canvas.width, gfx.canvas.height);
+            // Draw the player at the current position
+            const progress = (Date.now() - startTime) / ANIMATION_DURATION;
+            drawPlayer(currentPosition.x * 10 + (nextPosition.x - currentPosition.x) * 10 * progress,
+                currentPosition.y * 10 + (nextPosition.y - currentPosition.y) * 10 * progress, gfx);
+            if (Date.now() - startTime < ANIMATION_DURATION) {
+                // Keep animating
+            } else {
+                // Update the current position and next position
+                currentPosition = nextPosition;
+                nextPosition = playerPositions[playerPositions.indexOf(currentPosition) + 1];
+                startTime = undefined;
+                if (nextPosition) {
+                } else {
+                    // If we've reached the end of the player's positions, clear the interval and resolve the promise
+                    clearInterval(intervalId);
+                    resolve(1);
+                }
+            }
+        }, 10);
+    });
+}
 
 function run() {
 // Define the maze as a 2D array
@@ -181,11 +193,15 @@ var playerData: PlayerStatus[][] = [
         {direction: "UP", x: 3, y: 5},
         {direction: "UP", x: 3, y: 6},
         {direction: "UP", x: 3, y: 7},
-        {direction: "UP", x: 3, y: 8}],
-    // [{direction: "LEFT", x: 1, y: 1},{direction: "LEFT", x: 2, y: 1}]
+        {direction: "UP", x: 3, y: 8}
+    ],
+     [
+         {direction: "LEFT", x: 0, y: 0},
+         {direction: "LEFT", x: 0, y: 1}
+     ]
 ];
 
-animatePlayers(playerData, canvases.players, 10, 10);
+animatePlayers(playerData, canvases.players);
 }
 
 run();

@@ -121,23 +121,43 @@ function drawPlayer(x: number, y: number, gfx: GFX) {
 //     }, 10);
 // }
 
-
+const FPS = 30;
+const CELL_SIZE = 10;
+const ANIMATION_DURATION = 1;
 function animatePlayers(playerHistory: PlayerStatus[][], gfx: GFX) {
     let frame = 0;
+    let playersFrame = playerHistory.map(p => 0);
+
     const intervalId = setInterval(() => {
         // clear canvas
         gfx.ctx.clearRect(0, 0, gfx.canvas.width, gfx.canvas.height);
         // draw players
-        for (const player of playerHistory) {
-            const currentPosition = player[frame];
-            drawPlayer(currentPosition.x*10, currentPosition.y*10, gfx);
+        for (let i=0; i < playerHistory.length; i++) {
+            const player = playerHistory[i];
+            const currentPosition = player[playersFrame[i]];
+            const nextPosition = player[playersFrame[i] + 1];
+            if (!nextPosition) {
+                clearInterval(intervalId);
+                break;
+            }
+
+            // calculate the distance between current and next position
+            const distance = Math.sqrt(Math.pow(nextPosition.x - currentPosition.x, 2) + Math.pow(nextPosition.y - currentPosition.y, 2));
+            // calculate the number of frames needed for the animation
+            const frames = Math.ceil(ANIMATION_DURATION * FPS / (distance * CELL_SIZE));
+            // calculate the player's current position in pixels
+            const x = currentPosition.x * CELL_SIZE + (nextPosition.x - currentPosition.x) * CELL_SIZE * frame / frames;
+            const y = currentPosition.y * CELL_SIZE + (nextPosition.y - currentPosition.y) * CELL_SIZE * frame / frames;
+            drawPlayer(x, y, gfx);
+            if (frame === frames) {
+                playersFrame[i]++;
+                frame = 0;
+            }
         }
         frame++;
-        if (frame === playerHistory[0].length) {
-            clearInterval(intervalId);
-        }
-    }, 1000/3); // 30 fps
+    }, 1000/FPS);
 }
+
 
 function run() {
 // Define the maze as a 2D array
@@ -165,7 +185,7 @@ var playerData: PlayerStatus[][] = [
     // [{direction: "LEFT", x: 1, y: 1},{direction: "LEFT", x: 2, y: 1}]
 ];
 
-animatePlayers(playerData, canvases.players);
+animatePlayers(playerData, canvases.players, 10, 10);
 }
 
 run();

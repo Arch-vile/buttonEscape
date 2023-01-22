@@ -1,5 +1,5 @@
 
-interface Player {
+interface PlayerStatus {
     direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
     x: number;
     y: number;
@@ -56,12 +56,10 @@ function drawMaze(maze: string[][], gfx: GFX) {
 }
 
 
-function drawPlayer(player: Player, gfx: GFX) {
+function drawPlayer(x: number, y: number, gfx: GFX) {
     const {ctx} = gfx;
 
-        var x = player.x * 10; // x-coordinate of the player
-        var y = player.y * 10; // y-coordinate of the player
-        var direction = player.direction; // direction the player is facing
+        var direction = 'UP'; // direction the player is facing
 
         // Draw the player based on the direction they are facing
         ctx.fillStyle = "blue";
@@ -93,40 +91,52 @@ function drawPlayer(player: Player, gfx: GFX) {
 }
 
 
-function animateOnePlayer(playerHistory: Player[], gfx: GFX) {
-    const {ctx, canvas} = gfx;
-    let { direction, x, y } = playerHistory[0];
-    x *= 10;
-    y *= 10;
-    let i = 1;
-    let interval = setInterval(() => {
-        const pos = playerHistory[i];
-        const newX = pos.x * 10;
-        const newY = pos.y * 10;
-        if (newX > x) {
-            x += 1;
-        } else if (newX < x) {
-            x -= 1;
-        } else if (newY > y) {
-            y += 1;
-        } else if (newY < y) {
-            y -= 1;
-        }
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawPlayer({x:x/10,y:y/10, direction: direction},gfx);
-        if(x === newX && y === newY) {
-            clearInterval(interval);
-            i++;
-            if(i< playerHistory.length) animateOnePlayer(playerHistory.slice(i),gfx);
-        }
-    }, 10);
-}
+// function animateOnePlayer(playerHistory: PlayerStatus[], gfx: GFX) {
+//     console.log('animating player')
+//     const {ctx, canvas} = gfx;
+//     let { direction, x, y } = playerHistory[0];
+//     x *= 10;
+//     y *= 10;
+//     let i = 1;
+//     let interval = setInterval(() => {
+//         const pos = playerHistory[i];
+//         const newX = pos.x * 10;
+//         const newY = pos.y * 10;
+//         if (newX > x) {
+//             x += 1;
+//         } else if (newX < x) {
+//             x -= 1;
+//         } else if (newY > y) {
+//             y += 1;
+//         } else if (newY < y) {
+//             y -= 1;
+//         }
+//         ctx.clearRect(0, 0, canvas.width, canvas.height);
+//         drawPlayer({x:x/10,y:y/10, direction: direction},gfx);
+//         if(x === newX && y === newY) {
+//             clearInterval(interval);
+//             i++;
+//             if(i< playerHistory.length) animateOnePlayer(playerHistory.slice(i),gfx);
+//         }
+//     }, 10);
+// }
 
 
-function animatePlayers(playerHistory: Player[][], gfx: GFX) {
-    for (var i = 0; i < playerHistory.length; i++) {
-        animateOnePlayer(playerHistory[i],gfx);
-    }
+function animatePlayers(playerHistory: PlayerStatus[][], gfx: GFX) {
+    let frame = 0;
+    const intervalId = setInterval(() => {
+        // clear canvas
+        gfx.ctx.clearRect(0, 0, gfx.canvas.width, gfx.canvas.height);
+        // draw players
+        for (const player of playerHistory) {
+            const currentPosition = player[frame];
+            drawPlayer(currentPosition.x*10, currentPosition.y*10, gfx);
+        }
+        frame++;
+        if (frame === playerHistory[0].length) {
+            clearInterval(intervalId);
+        }
+    }, 1000/3); // 30 fps
 }
 
 function run() {
@@ -146,9 +156,13 @@ var maze = [
 const canvases = createCanvases();
 
 drawMaze(maze, canvases.maze);
-var playerData: Player[][] = [
-    [{direction: "UP", x: 3, y: 5}, {direction: "UP", x: 3, y: 6}],
-    [{direction: "LEFT", x: 1, y: 1},{direction: "LEFT", x: 2, y: 1}]
+var playerData: PlayerStatus[][] = [
+    [
+        {direction: "UP", x: 3, y: 5},
+        {direction: "UP", x: 3, y: 6},
+        {direction: "UP", x: 3, y: 7},
+        {direction: "UP", x: 3, y: 8}],
+    // [{direction: "LEFT", x: 1, y: 1},{direction: "LEFT", x: 2, y: 1}]
 ];
 
 animatePlayers(playerData, canvases.players);

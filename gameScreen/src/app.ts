@@ -180,7 +180,7 @@ interface Position {
 
 function positionAt(waypoints: Position[], timePassed: number): Position {
     let totalTime = waypoints.length - 1;
-    let percentage = timePassed / totalTime;
+    let percentage = timePassed / 100;
     let currentIndex = Math.floor(percentage * totalTime);
     let currentPosition = waypoints[currentIndex];
     let nextPosition = waypoints[currentIndex + 1];

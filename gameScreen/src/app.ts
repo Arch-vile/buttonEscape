@@ -1,5 +1,7 @@
+import playerSpriteImg from "./character.png"
+
 const FPS = 30;
-const CELL_SIZE = 20;
+const CELL_SIZE = 40;
 const ANIMATION_DURATION = 500; // in milliseconds
 
 interface PlayerStatus {
@@ -61,37 +63,26 @@ function drawMaze(maze: string[][], gfx: GFX) {
     drawGridlines(maze, gfx);
 }
 
+let playerSprite = new Image();
+playerSprite.src = playerSpriteImg;
 
-function drawPlayer(pos: Position, gfx: GFX) {
-    const {ctx} = gfx;
-    const {x, y} = pos;
+function drawPlayer(pos: Position, facing: number, gfx: GFX) {
+    const context = gfx.ctx;
+    // context.save();
 
-    var direction = 'UP'; // direction the player is facing
+    // context.translate(pos.x, pos.y);
+    // context.rotate(facing * Math.PI / 180);
 
-    // Draw the player based on the direction they are facing
-    ctx.fillStyle = "blue";
-    ctx.beginPath();
-    ctx.arc(x + 5, y + 5, 5, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = "white";
-    if (direction === "UP") {
-        ctx.beginPath();
-        ctx.arc(x + 5, y + 3, 1, 0, 2 * Math.PI);
-        ctx.fill();
-    } else if (direction === "DOWN") {
-        ctx.beginPath();
-        ctx.arc(x + 5, y + 7, 1, 0, 2 * Math.PI);
-        ctx.fill();
-    } else if (direction === "LEFT") {
-        ctx.beginPath();
-        ctx.arc(x + 3, y + 5, 1, 0, 2 * Math.PI);
-        ctx.fill();
-    } else if (direction === "RIGHT") {
-        ctx.beginPath();
-        ctx.arc(x + 7, y + 5, 1, 0, 2 * Math.PI);
-        ctx.fill();
-    }
+    const spriteWidth = 255;
+    const spriteHeight = 255;
+
+    const spriteX = 0;
+    const spriteY = 0;
+
+    context.drawImage(playerSprite, spriteX, spriteY, spriteWidth, spriteHeight,
+        pos.x, pos.y, CELL_SIZE,CELL_SIZE);
+
+    // context.restore();
 }
 
 
@@ -152,7 +143,7 @@ function run() {
     }
 
     const drawPlayerF = (pos: Position) => {
-        drawPlayer(pos, canvases.players)
+        drawPlayer(pos, 90, canvases.players)
     }
 
     const route1 = [{x: 1, y: 1}, {x: 2, y: 1}, {x: 3, y: 1}, {x: 3, y: 1}, {x: 3, y: 2}];

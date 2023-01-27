@@ -1,3 +1,7 @@
+const FPS = 30;
+const CELL_SIZE = 20;
+const ANIMATION_DURATION = 500; // in milliseconds
+
 interface PlayerStatus {
     direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
     x: number;
@@ -27,14 +31,14 @@ function drawGridlines(maze: string[][], gfx: GFX) {
 
     for (let i = 0; i <= maze.length; i++) {
         ctx.beginPath();
-        ctx.moveTo(i * 10, 0);
-        ctx.lineTo(i * 10, canvas.height);
+        ctx.moveTo(i * CELL_SIZE, 0);
+        ctx.lineTo(i * CELL_SIZE, canvas.height);
         ctx.stroke();
     }
     for (let j = 0; j <= maze[0].length; j++) {
         ctx.beginPath();
-        ctx.moveTo(0, j * 10);
-        ctx.lineTo(canvas.width, j * 10);
+        ctx.moveTo(0, j * CELL_SIZE);
+        ctx.lineTo(canvas.width, j * CELL_SIZE);
         ctx.stroke();
     }
 }
@@ -50,7 +54,7 @@ function drawMaze(maze: string[][], gfx: GFX) {
     for (let i = 0; i < maze.length; i++) {
         for (let j = 0; j < maze[i].length; j++) {
             if (maze[i][j] === "#") {
-                ctx.fillRect(i * 10, j * 10, 10, 10);
+                ctx.fillRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             }
         }
     }
@@ -90,10 +94,6 @@ function drawPlayer(pos: Position, gfx: GFX) {
     }
 }
 
-
-const FPS = 30;
-const CELL_SIZE = 10;
-const ANIMATION_DURATION = 500; // in milliseconds
 
 interface Position {
     x: number;
@@ -157,9 +157,8 @@ function run() {
 
     const route1 = [{x: 1, y: 1}, {x: 2, y: 1}, {x: 3, y: 1}, {x: 3, y: 1}, {x: 3, y: 2}];
     const route2 = [{y: 1, x: 1}, {y: 2, x: 1}, {y: 3, x: 1}, {y: 3, x: 1}, {y: 3, x: 2}];
-    const path1 = route1.map(it => ({x: it.x * 10, y: it.y * 10}));
-    const path2 = route2.map(it => ({x: it.x * 10, y: it.y * 10}));
-    // animatePlayer(path, 0, canvases.players, drawMazez)
+    const path1 = route1.map(it => ({x: it.x * CELL_SIZE, y: it.y * CELL_SIZE}));
+    const path2 = route2.map(it => ({x: it.x * CELL_SIZE, y: it.y * CELL_SIZE}));
     drawScreen([{path: path1},{path: path2}], drawMazez, drawPlayerF)
 }
 
@@ -182,15 +181,5 @@ function drawScreen(players: PlayerPath[], drawMaze: () => void, drawPlayer: (po
     loop(0);
 
 }
-
-function animatePlayer(path: Position[], timePassed: number, gfx: GFX, drawMaze: () => void) {
-    if (timePassed < 100) {
-        drawMaze();
-        clear(gfx);
-        drawPlayer(positionAt(path, timePassed), gfx);
-        setTimeout(() => animatePlayer(path, timePassed + 1, gfx, drawMaze), 10)
-    }
-}
-
 
 run();

@@ -123,36 +123,38 @@ function drawPlayer(x: number, y: number, gfx: GFX) {
 
 const FPS = 30;
 const CELL_SIZE = 10;
+const ANIMATION_DURATION = 500; // in milliseconds
 
 function animatePlayers(playerHistory: PlayerStatus[][], gfx: GFX) {
     // Use map to create an array of animation promises for each player
     const animationPromises = playerHistory.map((playerPositions, playerIndex) => {
-        return animatePlayer(playerPositions, gfx, playerIndex);
+        // Create a separate canvas for each player
+        const playerCanvas = document.createElement('canvas');
+        playerCanvas.width = gfx.canvas.width;
+        playerCanvas.height = gfx.canvas.height;
+        playerCanvas.style.position = 'absolute';
+        gfx.canvas.parentElement!.appendChild(playerCanvas);
+        return animatePlayer(playerPositions, {canvas: playerCanvas, ctx: playerCanvas.getContext('2d')!});
     });
 
     // Use Promise.all to wait for all animations to finish
     return Promise.all(animationPromises);
 }
 
-const ANIMATION_DURATION = 500; // in milliseconds
-
-function animatePlayer(playerPositions: PlayerStatus[], gfx: GFX, playerIndex: number) {
+function animatePlayer(playerPositions: PlayerStatus[], gfx: GFX) {
     let currentPosition = playerPositions[0];
     let nextPosition = playerPositions[1];
     let startTime: number|undefined;
 
     return new Promise((resolve) => {
         let intervalId = setInterval(() => {
-            console.log(playerIndex)
             if (!startTime) {
                 startTime = Date.now();
             }
-            // Clear the canvas
-            gfx.ctx.clearRect(0, 0, gfx.canvas.width, gfx.canvas.height);
             // Draw the player at the current position
             const progress = (Date.now() - startTime) / ANIMATION_DURATION;
-            drawPlayer(currentPosition.x * 10 + (nextPosition.x - currentPosition.x) * 10 * progress,
-                currentPosition.y * 10 + (nextPosition.y - currentPosition.y) * 10 * progress, gfx);
+            drawPlayer(currentPosition.x * 20 + (nextPosition.x - currentPosition.x) * 20 * progress,
+                currentPosition.y * 20 + (nextPosition.y - currentPosition.y) * 20 * progress, gfx);
             if (Date.now() - startTime < ANIMATION_DURATION) {
                 // Keep animating
             } else {
@@ -170,6 +172,28 @@ function animatePlayer(playerPositions: PlayerStatus[], gfx: GFX, playerIndex: n
         }, 10);
     });
 }
+
+interface Position {
+    x: number;
+    y: number;
+}
+
+function positionAt(waypoints: Position[], timePassed: number): Position {
+    let totalTime = waypoints.length - 1;
+    let percentage = timePassed / totalTime;
+    let currentIndex = Math.floor(percentage * totalTime);
+    let currentPosition = waypoints[currentIndex];
+    let nextPosition = waypoints[currentIndex + 1];
+
+    let xDiff = nextPosition.x - currentPosition.x;
+    let yDiff = nextPosition.y - currentPosition.y;
+
+    let x = currentPosition.x + (xDiff * (percentage * totalTime - currentIndex));
+    let y = currentPosition.y + (yDiff * (percentage * totalTime - currentIndex));
+
+    return { x, y };
+}
+
 
 function run() {
 // Define the maze as a 2D array
@@ -201,7 +225,15 @@ var playerData: PlayerStatus[][] = [
      ]
 ];
 
-animatePlayers(playerData, canvases.players);
+const route = [{x: 1, y:1},{x:2,y:1}];
+const path = route.map(it => ({x: it.x*10, y: it.y*10}));
+
+for(let i = 0; i < 100; i++ ) {
+    const pos = positionAt(path, i);
+    drawPlayer(pos.x, pos.y, canvases.players);
+}
+
+// animatePlayers(playerData, canvases.players);
 }
 
 run();

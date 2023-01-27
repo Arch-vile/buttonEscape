@@ -39,10 +39,13 @@ function drawGridlines(maze: string[][], gfx: GFX) {
     }
 }
 
+function clear(gfx: GFX) {
+    gfx.ctx.fillStyle = "white";
+    gfx.ctx.clearRect(0, 0, gfx.canvas.width, gfx.canvas.height);
+}
+
 function drawMaze(maze: string[][], gfx: GFX) {
-    const {ctx, canvas} = gfx;
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const {ctx} = gfx;
     ctx.fillStyle = "black";
     for (let i = 0; i < maze.length; i++) {
         for (let j = 0; j < maze[i].length; j++) {
@@ -55,8 +58,9 @@ function drawMaze(maze: string[][], gfx: GFX) {
 }
 
 
-function drawPlayer(x: number, y: number, gfx: GFX) {
+function drawPlayer(pos: Position, gfx: GFX) {
     const {ctx} = gfx;
+    const {x, y} = pos;
 
     var direction = 'UP'; // direction the player is facing
 
@@ -129,7 +133,6 @@ function run() {
 
     const canvases = createCanvases();
 
-    drawMaze(maze, canvases.maze);
     var playerData: PlayerStatus[][] = [
         [
             {direction: "UP", x: 3, y: 5},
@@ -143,14 +146,50 @@ function run() {
         ]
     ];
 
-    const route = [{x: 1, y: 1}, {x: 2, y: 1}];
-    const path = route.map(it => ({x: it.x * 10, y: it.y * 10}));
-
-    for (let i = 0; i < 100; i++) {
-        const pos = positionAt(path, i);
-        drawPlayer(pos.x, pos.y, canvases.players);
+    const drawMazez = () => {
+        drawMaze(maze, canvases.maze);
+        clear(canvases.players);
     }
 
+    const drawPlayerF = (pos: Position) => {
+        drawPlayer(pos, canvases.players)
+    }
+
+    const route1 = [{x: 1, y: 1}, {x: 2, y: 1}, {x: 3, y: 1}, {x: 3, y: 1}, {x: 3, y: 2}];
+    const route2 = [{y: 1, x: 1}, {y: 2, x: 1}, {y: 3, x: 1}, {y: 3, x: 1}, {y: 3, x: 2}];
+    const path1 = route1.map(it => ({x: it.x * 10, y: it.y * 10}));
+    const path2 = route2.map(it => ({x: it.x * 10, y: it.y * 10}));
+    // animatePlayer(path, 0, canvases.players, drawMazez)
+    drawScreen([{path: path1},{path: path2}], drawMazez, drawPlayerF)
+}
+
+interface PlayerPath {
+    path: Position[]
+}
+
+function drawScreen(players: PlayerPath[], drawMaze: () => void, drawPlayer: (pos: Position) => void) {
+
+    const loop = (timePassed: number) => {
+       if(timePassed < 100) {
+           drawMaze();
+           for(const player of players) {
+               drawPlayer(positionAt(player.path, timePassed));
+           }
+           setTimeout(() => loop(timePassed+1), 10);
+       }
+    }
+
+    loop(0);
+
+}
+
+function animatePlayer(path: Position[], timePassed: number, gfx: GFX, drawMaze: () => void) {
+    if (timePassed < 100) {
+        drawMaze();
+        clear(gfx);
+        drawPlayer(positionAt(path, timePassed), gfx);
+        setTimeout(() => animatePlayer(path, timePassed + 1, gfx, drawMaze), 10)
+    }
 }
 
 

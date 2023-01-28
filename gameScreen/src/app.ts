@@ -80,7 +80,7 @@ function drawPlayer(pos: Position, facing: number, gfx: GFX) {
     const spriteY = 0;
 
     context.drawImage(playerSprite, spriteX, spriteY, spriteWidth, spriteHeight,
-        pos.x, pos.y, CELL_SIZE,CELL_SIZE);
+        pos.x, pos.y, CELL_SIZE, CELL_SIZE);
 
     // context.restore();
 }
@@ -92,10 +92,19 @@ interface Position {
 }
 
 function positionAt(waypoints: Position[], timePassed: number): Position {
+    if(timePassed > 100) {
+        throw Error(`Can't go past 100, got ${timePassed}`)
+    }
+
     let totalTime = waypoints.length - 1;
     let percentage = timePassed / 100;
     let currentIndex = Math.floor(percentage * totalTime);
+
     let currentPosition = waypoints[currentIndex];
+    if(currentIndex === totalTime) {
+        return currentPosition;
+    }
+
     let nextPosition = waypoints[currentIndex + 1];
 
     let xDiff = nextPosition.x - currentPosition.x;
@@ -148,16 +157,16 @@ function run() {
             {direction: "RIGHT", x: 3, y: 7},
             {direction: "RIGHT", x: 4, y: 7},
         ],
-        [
-            {direction: "LEFT", x: 6, y: 3},
-            {direction: "LEFT", x: 5, y: 3},
-            {direction: "LEFT", x: 5, y: 3},
-            {direction: "LEFT", x: 5, y: 3},
-            {direction: "LEFT", x: 5, y: 3},
-        ]
+        // [
+        //     {direction: "LEFT", x: 6, y: 3},
+        //     {direction: "LEFT", x: 5, y: 3},
+        //     {direction: "LEFT", x: 5, y: 3},
+        //     {direction: "LEFT", x: 5, y: 3},
+        //     {direction: "LEFT", x: 5, y: 3},
+        // ]
     ];
 
-    const playerPaths =  playerDataFromServer.map(route => routeToPath(route))
+    const playerPaths = playerDataFromServer.map(route => routeToPath(route))
     drawScreen(playerPaths, drawMazez, drawPlayerF)
 }
 
@@ -168,17 +177,17 @@ interface PlayerPath {
 function drawScreen(players: PlayerPath[], drawMaze: () => void, drawPlayer: (pos: Position) => void) {
 
     const loop = (timePassed: number) => {
-       if(timePassed < 100) {
-           drawMaze();
-           for(const player of players) {
-               drawPlayer(positionAt(player.path, timePassed));
-           }
-           setTimeout(() => loop(timePassed+1), 10);
-       }
+        if (timePassed > 100) timePassed = 100
+        drawMaze();
+        for (const player of players) {
+            drawPlayer(positionAt(player.path, timePassed));
+        }
+
+        if (timePassed < 100)
+            setTimeout(() => loop(timePassed + 1), 10);
     }
 
     loop(0);
-
 }
 
-run();
+playerSprite.onload = () => run();

@@ -108,6 +108,12 @@ function positionAt(waypoints: Position[], timePassed: number): Position {
 }
 
 
+function routeToPath(route: PlayerStatus[]): PlayerPath {
+    return {
+        path: route.map(it => ({x: it.x * CELL_SIZE, y: it.y * CELL_SIZE}))
+    };
+}
+
 function run() {
 // Define the maze as a 2D array
     var maze = [
@@ -124,19 +130,6 @@ function run() {
 
     const canvases = createCanvases();
 
-    var playerData: PlayerStatus[][] = [
-        [
-            {direction: "UP", x: 3, y: 5},
-            {direction: "UP", x: 3, y: 6},
-            {direction: "UP", x: 3, y: 7},
-            {direction: "UP", x: 3, y: 8}
-        ],
-        [
-            {direction: "LEFT", x: 0, y: 0},
-            {direction: "LEFT", x: 0, y: 1}
-        ]
-    ];
-
     const drawMazez = () => {
         drawMaze(maze, canvases.maze);
         clear(canvases.players);
@@ -146,11 +139,26 @@ function run() {
         drawPlayer(pos, 90, canvases.players)
     }
 
-    const route1 = [{x: 1, y: 1}, {x: 2, y: 1}, {x: 3, y: 1}, {x: 3, y: 1}, {x: 3, y: 2}];
-    const route2 = [{y: 1, x: 1}, {y: 2, x: 1}, {y: 3, x: 1}, {y: 3, x: 1}, {y: 3, x: 2}];
-    const path1 = route1.map(it => ({x: it.x * CELL_SIZE, y: it.y * CELL_SIZE}));
-    const path2 = route2.map(it => ({x: it.x * CELL_SIZE, y: it.y * CELL_SIZE}));
-    drawScreen([{path: path1},{path: path2}], drawMazez, drawPlayerF)
+
+    var playerDataFromServer: PlayerStatus[][] = [
+        [
+            {direction: "DOWN", x: 3, y: 5},
+            {direction: "DOWN", x: 3, y: 6},
+            {direction: "DOWN", x: 3, y: 7},
+            {direction: "RIGHT", x: 3, y: 7},
+            {direction: "RIGHT", x: 4, y: 7},
+        ],
+        [
+            {direction: "LEFT", x: 6, y: 3},
+            {direction: "LEFT", x: 5, y: 3},
+            {direction: "LEFT", x: 5, y: 3},
+            {direction: "LEFT", x: 5, y: 3},
+            {direction: "LEFT", x: 5, y: 3},
+        ]
+    ];
+
+    const playerPaths =  playerDataFromServer.map(route => routeToPath(route))
+    drawScreen(playerPaths, drawMazez, drawPlayerF)
 }
 
 interface PlayerPath {

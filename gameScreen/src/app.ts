@@ -92,7 +92,7 @@ interface Position {
 }
 
 function positionAt(waypoints: Position[], timePassed: number): Position {
-    if(timePassed > 100) {
+    if (timePassed > 100) {
         throw Error(`Can't go past 100, got ${timePassed}`)
     }
 
@@ -101,7 +101,7 @@ function positionAt(waypoints: Position[], timePassed: number): Position {
     let currentIndex = Math.floor(percentage * totalTime);
 
     let currentPosition = waypoints[currentIndex];
-    if(currentIndex === totalTime) {
+    if (currentIndex === totalTime) {
         return currentPosition;
     }
 
@@ -121,6 +121,13 @@ function routeToPath(route: PlayerStatus[]): PlayerPath {
     return {
         path: route.map(it => ({x: it.x * CELL_SIZE, y: it.y * CELL_SIZE}))
     };
+}
+
+function playerPathsFromServerData(playerDataFromServer: PlayerStatus[][]) {
+    if (new Set(playerDataFromServer.map(it => it.length)).size !== 1)
+        throw Error('All players should have the same amount positions. As each position represents a position in time.');
+
+    return playerDataFromServer.map(route => routeToPath(route));
 }
 
 function run() {
@@ -157,16 +164,16 @@ function run() {
             {direction: "RIGHT", x: 3, y: 7},
             {direction: "RIGHT", x: 4, y: 7},
         ],
-        // [
-        //     {direction: "LEFT", x: 6, y: 3},
-        //     {direction: "LEFT", x: 5, y: 3},
-        //     {direction: "LEFT", x: 5, y: 3},
-        //     {direction: "LEFT", x: 5, y: 3},
-        //     {direction: "LEFT", x: 5, y: 3},
-        // ]
+        [
+            {direction: "LEFT", x: 6, y: 3},
+            {direction: "LEFT", x: 5, y: 3},
+            {direction: "LEFT", x: 5, y: 3},
+            {direction: "LEFT", x: 5, y: 3},
+            {direction: "LEFT", x: 5, y: 3},
+        ]
     ];
 
-    const playerPaths = playerDataFromServer.map(route => routeToPath(route))
+    const playerPaths = playerPathsFromServerData(playerDataFromServer)
     drawScreen(playerPaths, drawMazez, drawPlayerF)
 }
 

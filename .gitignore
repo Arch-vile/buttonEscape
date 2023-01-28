@@ -27,3 +27,4 @@ gameScreen/node_modules
 gameScreen/build
 gameScreen/.cache
 gameScreen/dist
+server/node_modules

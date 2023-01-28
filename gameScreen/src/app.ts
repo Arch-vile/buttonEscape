@@ -1,4 +1,4 @@
-import playerSpriteImg from "./character.png"
+import playerSpriteImg from "../resources/images/character.png"
 
 const FPS = 30;
 const CELL_SIZE = 40;
@@ -154,7 +154,6 @@ function run() {
     const drawPlayerF = (pos: Position) => {
         drawPlayer(pos, 90, canvases.players)
     }
-
 
     var playerDataFromServer: PlayerStatus[][] = [
         [

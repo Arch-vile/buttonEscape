@@ -1,17 +1,8 @@
+// @ts-ignore
 import playerSpriteImg from "../resources/images/character.png"
-import {foo} from "common/src/common";
+import {PlayerStatus, Position} from 'common/src/types'
 
-const FPS = 30;
 const CELL_SIZE = 40;
-const ANIMATION_DURATION = 500; // in milliseconds
-
-foo();
-
-interface PlayerStatus {
-    direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
-    x: number;
-    y: number;
-}
 
 interface GFX {
     canvas: HTMLCanvasElement;
@@ -89,11 +80,6 @@ function drawPlayer(pos: Position, facing: number, gfx: GFX) {
 }
 
 
-interface Position {
-    x: number;
-    y: number;
-}
-
 function positionAt(waypoints: Position[], timePassed: number): Position {
     if (timePassed > 100) {
         throw Error(`Can't go past 100, got ${timePassed}`)
@@ -158,25 +144,27 @@ function run() {
         drawPlayer(pos, 90, canvases.players)
     }
 
-    var playerDataFromServer: PlayerStatus[][] = [
-        [
-            {direction: "DOWN", x: 3, y: 5},
-            {direction: "DOWN", x: 3, y: 6},
-            {direction: "DOWN", x: 3, y: 7},
-            {direction: "RIGHT", x: 3, y: 7},
-            {direction: "RIGHT", x: 4, y: 7},
-        ],
-        [
-            {direction: "LEFT", x: 6, y: 3},
-            {direction: "LEFT", x: 5, y: 3},
-            {direction: "LEFT", x: 5, y: 3},
-            {direction: "LEFT", x: 5, y: 3},
-            {direction: "LEFT", x: 5, y: 3},
-        ]
-    ];
+    // Create an EventSource object
+    const eventSource = new EventSource("http://localhost:3000/events");
 
-    const playerPaths = playerPathsFromServerData(playerDataFromServer)
-    drawScreen(playerPaths, drawMazez, drawPlayerF)
+// Listen for the "message" event on the EventSource object
+    eventSource.addEventListener("playerMovement", (event) => {
+        // Parse the data received from the server
+        const data = JSON.parse(event.data);
+
+        console.log("got data")
+        // Log the data to the console
+        const playerPaths = playerPathsFromServerData(data.movement);
+        drawScreen(playerPaths, drawMazez, drawPlayerF)
+    });
+
+// Listen for the "error" event on the EventSource object
+    eventSource.addEventListener("error", (error) => {
+        // Log the error to the console
+        console.error(error);
+    });
+
+
 }
 
 interface PlayerPath {

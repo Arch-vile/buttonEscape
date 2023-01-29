@@ -1,21 +1,28 @@
+import EventEmitter from 'events';
 import http from 'http';
-import {foo} from "common/src/common";
-
-foo();
-
-
+import {createGame} from "./Game";
 const server = http.createServer((req, res) => {
     if (req.url === '/events') {
         res.writeHead(200, {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive'
+            'Connection': 'keep-alive',
+           "Access-Control-Allow-Origin":  "*",
+           "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
         });
 
-        // Send an event every second
-        setInterval(() => {
-            res.write(`data: ${new Date().toString()}\n\n`);
-        }, 1000);
+        const emitter = new EventEmitter()
+        createGame(emitter)
+
+        // setInterval(()=>{
+        //     res.write('asdfsdf\n\n')
+        // },1000);
+        emitter.on('playerMovement', (data) => {
+            console.log('Sending data');
+            const eventType = `event: playerMovement`
+            const dataPart = `data: ${JSON.stringify(data)}`
+            res.write(`${eventType}\n${dataPart}\n\n`)
+        });
 
         // Close the connection when the client closes it
         req.on('close', () => {

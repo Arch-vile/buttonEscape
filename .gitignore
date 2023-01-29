@@ -30,3 +30,4 @@ gameScreen/dist
 server/node_modules
 node_modules
 .parcel-cache
+packages/gameScreen/dist

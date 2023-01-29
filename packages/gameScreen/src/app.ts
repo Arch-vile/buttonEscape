@@ -49,7 +49,7 @@ function drawMaze(maze: string[][], gfx: GFX) {
     ctx.fillStyle = "black";
     for (let i = 0; i < maze.length; i++) {
         for (let j = 0; j < maze[i].length; j++) {
-            if (maze[i][j] === "#") {
+            if (maze[j][i] === "#") {
                 ctx.fillRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             }
         }
@@ -120,20 +120,15 @@ function playerPathsFromServerData(playerDataFromServer: PlayerStatus[][]) {
 }
 
 function run() {
-// Define the maze as a 2D array
-    var maze = [
-        ["#", "#", "#", "#", "#", "#", "#", "#", "#"],
-        ["#", ".", ".", ".", "#", ".", ".", ".", "#"],
-        ["#", ".", "#", ".", "#", ".", "#", ".", "#"],
-        ["#", ".", ".", ".", ".", ".", "#", ".", "#"],
-        ["#", "#", "#", "#", ".", "#", "#", ".", "#"],
-        ["#", ".", ".", ".", ".", ".", ".", ".", "#"],
-        ["#", ".", "#", "#", "#", ".", "#", "#", "#"],
-        ["#", ".", ".", ".", "#", ".", ".", ".", "#"],
-        ["#", "#", "#", "#", "#", "#", "#", "#", "#"]
-    ];
+    // Create an EventSource object
+    const eventSource = new EventSource("http://localhost:3000/events");
 
     const canvases = createCanvases();
+
+    let maze = [[]];
+    eventSource.addEventListener("maze", (event) => {
+        maze = JSON.parse(event.data);
+    });
 
     const drawMazez = () => {
         drawMaze(maze, canvases.maze);
@@ -144,15 +139,10 @@ function run() {
         drawPlayer(pos, 90, canvases.players)
     }
 
-    // Create an EventSource object
-    const eventSource = new EventSource("http://localhost:3000/events");
-
-// Listen for the "message" event on the EventSource object
     eventSource.addEventListener("playerMovement", (event) => {
         // Parse the data received from the server
         const data = JSON.parse(event.data);
 
-        console.log("got data")
         // Log the data to the console
         const playerPaths = playerPathsFromServerData(data.movement);
         drawScreen(playerPaths, drawMazez, drawPlayerF)

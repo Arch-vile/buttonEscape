@@ -25,12 +25,12 @@ const server = http.createServer((req, res) => {
 
         const emitter = new EventEmitter()
         const sendData = (data: GameEvent) => emitter.emit('sendData',data)
-        createGame(sendData)
 
         emitter.on('sendData', (data) => {
             res.write(gameEventToSSE(data))
         });
 
+        createGame(sendData)
         // Close the connection when the client closes it
         req.on('close', () => {
             res.end();

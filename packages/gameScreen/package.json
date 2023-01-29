@@ -1,0 +1,19 @@
+{
+  "name": "gameScreen",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "parcel resources/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "common": "workspace:^1.0.0",
+    "parcel": "^2.8.3",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+  }
+}

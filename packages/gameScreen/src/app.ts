@@ -1,8 +1,11 @@
 import playerSpriteImg from "../resources/images/character.png"
+import {foo} from "common/src/common";
 
 const FPS = 30;
 const CELL_SIZE = 40;
 const ANIMATION_DURATION = 500; // in milliseconds
+
+foo();
 
 interface PlayerStatus {
     direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';

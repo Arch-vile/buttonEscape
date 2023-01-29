@@ -1,4 +1,8 @@
 import http from 'http';
+import {foo} from "common/src/common";
+
+foo();
+
 
 const server = http.createServer((req, res) => {
     if (req.url === '/events') {

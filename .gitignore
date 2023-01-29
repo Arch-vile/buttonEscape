@@ -28,3 +28,5 @@ gameScreen/build
 gameScreen/.cache
 gameScreen/dist
 server/node_modules
+node_modules
+.parcel-cache

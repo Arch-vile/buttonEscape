@@ -14,9 +14,6 @@ const server = http.createServer((req, res) => {
         const emitter = new EventEmitter()
         createGame(emitter)
 
-        // setInterval(()=>{
-        //     res.write('asdfsdf\n\n')
-        // },1000);
         emitter.on('playerMovement', (data) => {
             console.log('Sending data');
             const eventType = `event: playerMovement`

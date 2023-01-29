@@ -3,8 +3,10 @@ export interface Position {
     y: number;
 }
 
+export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
+
 export interface PlayerStatus {
-    direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
+    direction: Direction;
     x: number;
     y: number;
 }

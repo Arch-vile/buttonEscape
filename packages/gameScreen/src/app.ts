@@ -113,6 +113,7 @@ function routeToPath(route: PlayerStatus[]): PlayerPath {
 }
 
 function playerPathsFromServerData(playerDataFromServer: PlayerStatus[][]) {
+    console.log(JSON.stringify(playerDataFromServer));
     if (new Set(playerDataFromServer.map(it => it.length)).size !== 1)
         throw Error('All players should have the same amount positions. As each position represents a position in time.');
 

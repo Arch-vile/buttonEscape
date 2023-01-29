@@ -1,7 +1,7 @@
-import EventEmitter from "events";
 import {PlayerMovementEvent, PlayerStatus} from "common/src/types";
+import {GameEvent} from "./index";
 
-export function createGame(emitter: EventEmitter) {
+export function createGame(emitter: (event: GameEvent) => void) {
 
     const loop = () => {
 
@@ -22,10 +22,10 @@ export function createGame(emitter: EventEmitter) {
                 ]]
         }
 
-        emitter.emit('playerMovement', data);
+        emitter({type: 'playerMovement', data});
         setTimeout(() => loop(), 2000);
     }
-    loop();
+     loop();
 
     return {};
 }

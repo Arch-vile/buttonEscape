@@ -1,6 +1,18 @@
 import EventEmitter from 'events';
 import http from 'http';
 import {createGame} from "./Game";
+
+export interface GameEvent {
+    type: string;
+    data: object;
+}
+
+function gameEventToSSE(event: GameEvent): string {
+    const eventType = `event: ${event.type}`
+    const dataPart = `data: ${JSON.stringify(event.data)}`
+    return `${eventType}\n${dataPart}\n\n`
+}
+
 const server = http.createServer((req, res) => {
     if (req.url === '/events') {
         res.writeHead(200, {
@@ -12,13 +24,11 @@ const server = http.createServer((req, res) => {
         });
 
         const emitter = new EventEmitter()
-        createGame(emitter)
+        const sendData = (data: GameEvent) => emitter.emit('sendData',data)
+        createGame(sendData)
 
-        emitter.on('playerMovement', (data) => {
-            console.log('Sending data');
-            const eventType = `event: playerMovement`
-            const dataPart = `data: ${JSON.stringify(data)}`
-            res.write(`${eventType}\n${dataPart}\n\n`)
+        emitter.on('sendData', (data) => {
+            res.write(gameEventToSSE(data))
         });
 
         // Close the connection when the client closes it

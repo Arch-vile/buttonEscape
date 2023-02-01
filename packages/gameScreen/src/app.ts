@@ -122,7 +122,7 @@ function playerPathsFromServerData(playerDataFromServer: PlayerStatus[][]) {
 
 function run() {
     // Create an EventSource object
-    const eventSource = new EventSource("http://localhost:3000/events");
+    const eventSource = new EventSource("https://buttonescape-production.up.railway.app/events");
 
     const canvases = createCanvases();
 

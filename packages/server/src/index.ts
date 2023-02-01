@@ -14,6 +14,19 @@ function gameEventToSSE(event: GameEvent): string {
 }
 
 const server = http.createServer((req, res) => {
+    if(req.url === '/') {
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            "Access-Control-Allow-Origin":  "*",
+            "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+        });
+        res.write('Hello from server')
+        res.end()
+    }
+
+
     if (req.url === '/events') {
         res.writeHead(200, {
             'Content-Type': 'text/event-stream',

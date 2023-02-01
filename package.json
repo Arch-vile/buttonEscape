@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start:server": "cd packages/server && pnpm start",
     "build:screen": "cd packages/gameScreen && pnpm build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

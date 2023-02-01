@@ -1,0 +1,21 @@
+# Use an official Node.js image as the base image
+FROM node:16
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy all files
+COPY . .
+
+# Install pnpm for package management and workspaces
+RUN npm install -g pnpm
+
+# Install the app dependencies in the container
+RUN pnpm install
+
+# Expose the port that the app listens on
+EXPOSE 3000
+
+# Define the command to run when the container starts
+CMD ["pnpm", "start:server"]
+
